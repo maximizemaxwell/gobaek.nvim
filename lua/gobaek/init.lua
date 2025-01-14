@@ -25,10 +25,16 @@ function M.create_problem(problem_number)
 	local template = [[
 package main
 
-import "fmt"
+import (
+  "fmt"
+  "bufio"
+  "os"
+  )
 
 func main() {
-    fmt.Println("Hello, Problem ]] .. problem_number .. [[!")
+    var reader *buffio.Reader = bufio.NewReader(os.Stdin)
+    var writer *buffio.Writer = bufio.NewWriter(os.Stdout)
+    fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
 	local file = io.open(main_file, "w")
