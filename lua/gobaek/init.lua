@@ -123,9 +123,7 @@ function M.run_problem(problem_number)
 
 	-- tmux split-window -p 25 로 세로 분할을 25%로 설정
 	-- -c 옵션으로 실행 디렉토리 지정
-	local cmd = string.format("tmux split-window -p 25 -c '%s' 'go run main.go'", problem_dir)
-
-	-- Lua에서 외부 명령어 호출
+	local cmd = string.format("tmux split-window -p 25 -c '%s' 'zsh -ic \"go run main.go; exec zsh\"'", problem_dir)
 	os.execute(cmd)
 end
 
