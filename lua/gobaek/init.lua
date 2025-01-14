@@ -124,31 +124,10 @@ function M.run_problem(problem_number)
 
 	-- tmux split-window -p 25 로 세로 분할을 25%로 설정
 	-- -c 옵션으로 실행 디렉토리 지정
+
 	local cmd = string.format(
 		[[
-tmux split-window -p 25 -c '%s' "zsh -ic \"
-/usr/bin/time -f '%%e %%M' go run main.go 2>&1 | {
-  # 실행 결과를 변수로 저장
-  OUTPUT=\$(cat);
-  TIME_MEM=\$(echo \"\$OUTPUT\" | grep -oE '[0-9]+\\.[0-9]+ [0-9]+');
-
-  # 시간(초)와 메모리(KB)를 분리 및 변환
-  SECONDS=\$(echo \$TIME_MEM | awk '{print \$1}');
-  MEMKB=\$(echo \$TIME_MEM | awk '{print \$2}');
-  TIMESEC=\$(awk -v s=\$SECONDS 'BEGIN{printf(\"%%.0f\", s+0.5)}');
-  MEMMB=\$(awk -v m=\$MEMKB 'BEGIN{printf(\"%%.0f\", m/1024+0.5)}');
-
-  # 출력 포맷
-  echo \"=============================================\";
-  echo \"\$TIMESEC 초    \$MEMMB MB\";
-  echo;
-  echo \"[실행결과]\";
-  echo \"\$OUTPUT\" | grep -v '[0-9]+\\.[0-9]+ [0-9]+'; # 실행 결과만 출력
-
-  # 셸 유지
-  exec zsh
-}
-\""
+tmux split-window -p 25 -c '%s' 'zsh -ic "/usr/bin/time -f '%%e %%M' go run main.go 2>&1 | awk '{time=int(\$1+0.5); mem=int(\$2/1024+0.5); printf(\"%%d 초\\t%%d MB\\n\", time, mem)}'; exec zsh"'
 ]],
 		problem_dir
 	)

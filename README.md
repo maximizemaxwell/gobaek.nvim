@@ -21,6 +21,7 @@
 ```vim
 :Gobaek <문제번호>
 ```
+### 문제 파일 생성
 
 예시
 ```vim
@@ -36,14 +37,36 @@ baekjoon/
 ```
 백준 디렉토리가 없으면 생기고 있으면 문제번호 디렉토리와 main.go가 생깁니다.
 
-별 건 없지만 문제번호를 환영하는 스크립트가 있어요.
+별 건 없지만 문제번호를 환영하는 기본 스크립트가 있어요.
 
 ```go
 package main
 
-import "fmt"
+import (
+  "fmt"
+  "bufio"
+  "os"
+)
 
 func main() {
-    fmt.Println("Hello, Problem 123!")
+  var reader *bufio.Reader = bufio.NewReader(os.Stdin)
+  var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
+  defer writer.Flush()
+  fmt.Fprintln(writer, "Hello, Problem [문제번호]!")
 }
 ```
+
+### 문제 초기화
+
+```vim
+:Gobaek Reset 123
+```
+을 하면 해당 문제파일이 기본스크립트로 돌아갑니다.
+
+
+### 실행하기
+
+```vim
+:Gobaek Run 123
+```
+tmux가 커져있다면 화면을 분할하고 해당 파일을 실행해요.
