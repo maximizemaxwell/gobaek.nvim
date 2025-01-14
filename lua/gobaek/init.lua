@@ -124,16 +124,10 @@ function M.run_problem(problem_number)
 
 	-- tmux split-window -p 25 로 세로 분할을 25%로 설정
 	-- -c 옵션으로 실행 디렉토리 지정
-
-	local cmd = string.format(
-		[[
-tmux split-window -p 25 -c '%s' 'zsh -ic "/usr/bin/time -f '%%e %%M' go run main.go 2>&1 | awk '{time=int(\$1+0.5); mem=int(\$2/1024+0.5); printf(\"%%d 초\\t%%d MB\\n\", time, mem)}'; exec zsh"'
-]],
-		problem_dir
-	)
+	-- zsh -ic로 실행 후, exec zsh로 셸을 이어받아 바로 종료되지 않도록 함
+	local cmd = string.format("tmux split-window -p 25 -c '%s' 'zsh -ic \"go run main.go; exec zsh\"'", problem_dir)
 	os.execute(cmd)
 end
-
 ----------------------------------------------------------------
 -- 4. Neovim UserCommand 정의
 --    :Gobaek [문제번호], :Gobaek Reset [문제번호], :Gobaek Run [문제번호]
