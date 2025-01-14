@@ -26,18 +26,15 @@ function M.create_problem(problem_number)
 	-- 기본 Go 템플릿
 	local template = [[
 package main
-
 import (
   "fmt"
   "bufio"
   "os"
 )
-
 func main() {
   var reader *bufio.Reader = bufio.NewReader(os.Stdin)
   var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
   defer writer.Flush()
-
   fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
@@ -76,13 +73,11 @@ function M.reset_problem(problem_number)
 
 	local template = [[
 package main
-
 import (
   "fmt"
   "bufio"
   "os"
 )
-
 func main() {
   var reader *bufio.Reader = bufio.NewReader(os.Stdin)
   var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
@@ -124,10 +119,12 @@ function M.run_problem(problem_number)
 
 	-- tmux split-window -p 25 로 세로 분할을 25%로 설정
 	-- -c 옵션으로 실행 디렉토리 지정
-	-- zsh -ic로 실행 후, exec zsh로 셸을 이어받아 바로 종료되지 않도록 함
+	local cmd = string.format("tmux split-window -p 25 -c '%s' 'go run main.go'", problem_dir)
+	-- Lua에서 외부 명령어 호출
 	local cmd = string.format("tmux split-window -p 25 -c '%s' 'zsh -ic \"go run main.go; exec zsh\"'", problem_dir)
 	os.execute(cmd)
 end
+
 ----------------------------------------------------------------
 -- 4. Neovim UserCommand 정의
 --    :Gobaek [문제번호], :Gobaek Reset [문제번호], :Gobaek Run [문제번호]
