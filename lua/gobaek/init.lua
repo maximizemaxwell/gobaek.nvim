@@ -37,6 +37,11 @@ func main() {
   var reader *bufio.Reader = bufio.NewReader(os.Stdin)
   var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
   defer writer.Flush()
+
+  var n int
+
+  fmt.Fscanln(reader, &n)
+
   fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
@@ -123,7 +128,35 @@ function M.run_problem(problem_number)
 
 	-- tmux split-window -p 25 로 세로 분할을 25%로 설정
 	-- -c 옵션으로 실행 디렉토리 지정
-	local cmd = string.format("tmux split-window -p 25 -c '%s' 'zsh -ic \"go run main.go; exec zsh\"'", problem_dir)
+
+	local cmd = string.format(
+		[[
+tmux split-window -p 25 -c '%s' "zsh -ic \"
+/usr/bin/time -f '%%e %%M' -o /tmp/time_output.txt go run main.go > /tmp/program_output.txt 2>&1;
+
+# time 출력값 예: '1.57 24568' (초, 최대 메모리KB)
+TIME_MEM=\$(cat /tmp/time_output.txt);
+SECONDS=\$(echo \$TIME_MEM | awk '{print \$1}');  # 1.57
+MEMKB=\$(echo \$TIME_MEM | awk '{print \$2}');    # 24568
+
+# 반올림: 1.57 -> 2초, 24568KB -> 약24MB
+TIMESEC=\$(awk -v s=\$SECONDS 'BEGIN{printf(\"%%.0f\", s+0.5)}');
+MEMMB=\$(awk -v m=\$MEMKB 'BEGIN{printf(\"%%.0f\", m/1024+0.5)}');
+
+# 원하는 포맷으로 출력
+echo \"=============================================\";
+echo \"\$TIMESEC 초 \$MEMMB MB\";
+echo;
+echo \"[실행결과]\";
+cat /tmp/program_output.txt;
+
+# 셸이 바로 종료되지 않도록 exec zsh
+exec zsh
+\""
+]],
+		problem_dir
+	)
+
 	os.execute(cmd)
 end
 
