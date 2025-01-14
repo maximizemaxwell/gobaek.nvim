@@ -32,8 +32,8 @@ import (
   )
 
 func main() {
-    var reader *buffio.Reader = bufio.NewReader(os.Stdin)
-    var writer *buffio.Writer = bufio.NewWriter(os.Stdout)
+    var reader *bufio.Reader = bufio.NewReader(os.Stdin)
+    var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
     fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
