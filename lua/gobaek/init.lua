@@ -32,9 +32,10 @@ import (
   )
 
 func main() {
-    var reader *bufio.Reader = bufio.NewReader(os.Stdin)
-    var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
-    fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
+  var reader *bufio.Reader = bufio.NewReader(os.Stdin)
+  var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
+  defer writer.Flush()
+  fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
 	local file = io.open(main_file, "w")
