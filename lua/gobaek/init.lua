@@ -134,24 +134,27 @@ function M.run_problem(problem_number)
 tmux split-window -p 25 -c '%s' "zsh -ic \"
 /usr/bin/time -f '%%e %%M' -o /tmp/time_output.txt go run main.go > /tmp/program_output.txt 2>&1;
 
-# time 출력값 예: '1.57 24568' (초, 최대 메모리KB)
+# 실행 시간/메모리 출력
 TIME_MEM=\$(cat /tmp/time_output.txt);
-SECONDS=\$(echo \$TIME_MEM | awk '{print \$1}');  # 1.57
-MEMKB=\$(echo \$TIME_MEM | awk '{print \$2}');    # 24568
-
-# 반올림: 1.57 -> 2초, 24568KB -> 약24MB
+SECONDS=\$(echo \$TIME_MEM | awk '{print \$1}');
+MEMKB=\$(echo \$TIME_MEM | awk '{print \$2}');
 TIMESEC=\$(awk -v s=\$SECONDS 'BEGIN{printf(\"%%.0f\", s+0.5)}');
 MEMMB=\$(awk -v m=\$MEMKB 'BEGIN{printf(\"%%.0f\", m/1024+0.5)}');
 
-# 원하는 포맷으로 출력
+# 화면 출력
 echo \"=============================================\";
-echo \"\$TIMESEC 초 \$MEMMB MB\";
+echo \"\$TIMESEC 초    \$MEMMB MB\";
 echo;
 echo \"[실행결과]\";
 cat /tmp/program_output.txt;
 
-# 셸이 바로 종료되지 않도록 exec zsh
-exec zsh
+# 임시 파일 제거
+rm -f /tmp/time_output.txt /tmp/program_output.txt;
+
+# 사용자가 Enter를 눌러야 종료되게
+echo;
+echo \"Enter 키를 눌러 창을 닫습니다...\";
+read
 \""
 ]],
 		problem_dir
