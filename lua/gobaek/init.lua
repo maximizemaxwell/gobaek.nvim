@@ -38,10 +38,6 @@ func main() {
   var writer *bufio.Writer = bufio.NewWriter(os.Stdout)
   defer writer.Flush()
 
-  var n int
-
-  fmt.Fscanln(reader, &n)
-
   fmt.Fprintln(writer, "Hello, Problem ]] .. problem_number .. [[!")
 }
 ]]
